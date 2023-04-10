@@ -9,24 +9,26 @@ namespace ReallySimpleMl
     {
         private readonly MLContext ctx;
         private readonly IDataView dataView;
-        private readonly ITransformer model;
 
         public Yelp()
         {
             ctx = new MLContext();
             dataView = ctx.Data
-                .LoadFromTextFile<SentimentData>("yelp.txt");
+                .LoadFromTextFile<SentimentData>("yelp_labelled.txt");
         }
 
-        public void TrainMl()
+        public ITransformer TrainMl()
         {
             // split data into testing set
             var splitDataView = ctx.Data
                 .TrainTestSplit(dataView, testFraction: 0.2);
 
             // build model
-            var estimator = ctx.Transforms.Text.FeaturizeText("Features", nameof(SentimentData.Text))
-                .Append(ctx.BinaryClassification.Trainers.SdcaLogisticRegression("Features"));
+            var estimator = ctx.Transforms.Text
+                .FeaturizeText(
+                    outputColumnName: "Features",
+                    inputColumnName: nameof(SentimentData.Text)
+                ).Append(ctx.BinaryClassification.Trainers.SdcaLogisticRegression(featureColumnName: "Features"));
 
             // Train model
             ITransformer model = default!;
@@ -50,15 +52,16 @@ namespace ReallySimpleMl
                     console.UpdateTarget(table);
                     console.Refresh();
                 });
+            return model;
         }
 
-        public void SaveModel() => // save to disk
+        public void SaveModel(ITransformer model) => // save to disk
             ctx.Model.Save(model, dataView.Schema, "model.zip");
 
         public void LoadModel(out DataViewSchema? schema) => // load from disk
             ctx.Model.Load("model.zip", out schema);
 
-        public void ExecuteMl()
+        public void ExecuteMl(ITransformer model)
         {
             while (true)
             {
@@ -66,21 +69,21 @@ namespace ReallySimpleMl
                 var engine = ctx.Model.CreatePredictionEngine<SentimentData, SentimentPrediction>(model);
                 var input = new SentimentData { Text = text };
                 var result = engine.Predict(input);
-                var (color, emoji) = result.Prediction
-                    ? (color: "green", emoji: "👍")
-                    : (color: "red", emoji: "👎");
-                Console.MarkupLine($"{emoji} [{color}]\"{text}\" ({result.Probability:P00})[/] ");
+                var (color, emotion) = result.Prediction
+                    ? (color: "green", emoji: "OK")
+                    : (color: "red", emoji: "BAD");
+                Console.MarkupLine($"{emotion} [{color}]\"{text}\" ({result.Probability:P00})[/] ");
             }
         }
     }
 
-    internal class SentimentData
+    public class SentimentData
     {
         [LoadColumn(0)] public string? Text;
         [LoadColumn(1), ColumnName("Label")] public bool Sentiment;
     }
 
-    internal class SentimentPrediction : SentimentData
+    public class SentimentPrediction : SentimentData
     {
         [ColumnName("PredictedLabel")] public bool Prediction { get; set; }
         public float Probability { get; set; }

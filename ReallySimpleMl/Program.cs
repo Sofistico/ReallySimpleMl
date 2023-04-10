@@ -6,8 +6,9 @@ namespace ReallySimpleMl
     {
         private static void Main(string[] args)
         {
-            Test test = new Test();
-            test.Ml();
+            Yelp yelp = new Yelp();
+            var model = yelp.TrainMl();
+            yelp.ExecuteMl(model);
         }
     }
 }
