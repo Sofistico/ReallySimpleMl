@@ -9,10 +9,15 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.ML" Version="2.0.1" />
+    <PackageReference Include="Microsoft.ML.TorchSharp" Version="0.20.1" />
 	<PackageReference Include="Spectre.Console" Version="0.45.0" />
+	<PackageReference Include="TorchSharp-cuda-windows" Version="0.99.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="turtles.tsv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="vacancy.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

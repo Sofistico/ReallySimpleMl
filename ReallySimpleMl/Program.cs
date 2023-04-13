@@ -9,6 +9,7 @@ namespace ReallySimpleMl
         {
             {0, "Yelp!" },
             {1, "Descobre se é vaga" },
+            {2, "Turtles!" }
         };
 
         private static void Main(string[] args)
@@ -36,6 +37,12 @@ namespace ReallySimpleMl
                     MlVacancies mlVacancies = new MlVacancies();
                     var vacancyModel = mlVacancies.TrainMl();
                     mlVacancies.ExecuteMl(vacancyModel);
+                    break;
+
+                case 2:
+                    Turtles turtles = new Turtles();
+                    var turtleModels = turtles.TrainModel();
+                    turtles.ExecuteModel(turtleModels);
                     break;
                 default:
                     break;
