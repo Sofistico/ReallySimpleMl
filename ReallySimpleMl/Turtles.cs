@@ -21,7 +21,7 @@ namespace ReallySimpleMl
             };
 
             Console.WriteLine("Loading data...");
-            data = mlContext.Data.LoadFromTextFile<ModelTurtleInput>("turtles.tsv", separatorChar: '\t', hasHeader: false);
+            data = mlContext.Data.LoadFromTextFile<ModelTurtleInput>("Turtles.tsv", separatorChar: '\t', hasHeader: false);
         }
 
         public ITransformer TrainModel()
