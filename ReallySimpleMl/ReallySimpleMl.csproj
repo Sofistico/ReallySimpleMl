@@ -12,6 +12,7 @@
     <PackageReference Include="Microsoft.ML.TorchSharp" Version="0.20.1" />
 	<PackageReference Include="Spectre.Console" Version="0.45.0" />
 	<PackageReference Include="TorchSharp-cuda-windows" Version="0.99.1" />
+    <PackageReference Include="WTelegramClient" Version="3.3.3" />
   </ItemGroup>
 
   <ItemGroup>
